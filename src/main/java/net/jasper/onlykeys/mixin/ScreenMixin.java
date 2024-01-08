@@ -16,7 +16,7 @@ public class ScreenMixin {
     @Inject(method="keyPressed", at=@At("HEAD"), cancellable = true)
     private void injected(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         // Cancel normal keypress handling if the key is one of the onlykeys keybindings was used
-        if (((Screen)(Object)this) instanceof AbstractInventoryScreen<?> currentScreen) {
+        if (((Screen)(Object)this) instanceof AbstractInventoryScreen) {
             if (Arrays.stream(ONLYKEYS_KEYBINDINGS).anyMatch(keyBinding -> keyBinding.matchesKey(keyCode, scanCode))) {
                 cir.setReturnValue(true);
                 cir.cancel();

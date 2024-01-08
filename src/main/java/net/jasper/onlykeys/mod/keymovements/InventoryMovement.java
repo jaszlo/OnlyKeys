@@ -4,15 +4,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.jasper.onlykeys.mixin.KeyBindingMixin;
 import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.util.Keys;
-import net.jasper.onlykeys.mod.util.SlotsUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static net.jasper.onlykeys.mod.util.Keys.*;
 
@@ -25,7 +22,7 @@ public class InventoryMovement {
     private static boolean keyMouseRight = false;
 
     private static int clickCooldown = 0;
-    private static final int COOLDOWN = 3;
+    private static final int COOLDOWN = 2; // Ticks
 
     public static int[] getXYForSlot() {
         if (MinecraftClient.getInstance().currentScreen == null) {
@@ -37,31 +34,68 @@ public class InventoryMovement {
         return new int[]{ s.x, s.y };
     }
 
-    private static final List<Integer> MOVE_UP_TO_AMOR = Arrays.stream(new int[]{ 9, 10, 11 }).boxed().toList();
-    private static final List<Integer> MOVE_UP_TO_OFFHAND = Arrays.stream(new int[]{ 12, 13 }).boxed().toList();
-    private static final List<Integer> MOVE_UP_TO_CRAFTING_GRID_LEFT = Arrays.stream(new int[]{ 14 }).boxed().toList();
-    private static final List<Integer> MOVE_UP_TO_CRAFTING_GRID_RIGHT = Arrays.stream(new int[]{ 15, 16 }).boxed().toList();
-    private static final List<Integer> MOVE_UP_TO_CRAFTING_RESULT = Arrays.stream(new int[]{ 17 }).boxed().toList();
+    private enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
 
-    private static void handleHighestInventorySlots(MinecraftClient client) {
-        if (MOVE_UP_TO_AMOR.contains(selectedSlot)) {
-            selectedSlot = SlotsUtil.AMOR_SLOT_BOTTOM;
-        } else if (MOVE_UP_TO_OFFHAND.contains(selectedSlot)) {
-            selectedSlot = SlotsUtil.OFFHAND_SLOT;
-        } else if (MOVE_UP_TO_CRAFTING_GRID_LEFT.contains(selectedSlot)) {
-            selectedSlot = SlotsUtil.CRAFTING_GRID_LEFT_SLOT;
-        } else if (MOVE_UP_TO_CRAFTING_GRID_RIGHT.contains(selectedSlot)) {
-            selectedSlot = SlotsUtil.CRAFTING_GRID_RIGHT_SLOT;
-        } else if (MOVE_UP_TO_CRAFTING_RESULT.contains(selectedSlot)) {
-            selectedSlot = SlotsUtil.CRAFTING_RESULT_SLOT;
+    private static float squaredDistance(Slot s1, Slot s2) {
+        return (float) (Math.pow(s1.x - s2.x, 2) + Math.pow(s1.y - s2.y, 2));
+    }
+
+    private static int findClosestSlot(Direction dir, Slot currentSlot, ScreenHandler currentScreenHandler) {
+        int currentBest = selectedSlot;
+        float currentDist = Float.MAX_VALUE;
+        // Create a list with all slots that have a lower y value than the current slot (lower = higher on screen)
+        for (int i = 0; i < currentScreenHandler.slots.size(); i++) {
+            Slot s = currentScreenHandler.slots.get(i);
+            // Skip same slot
+            if (s == currentSlot) {
+                continue;
+            }
+            // Find best match
+            if        (dir == Direction.UP && s.y < currentSlot.y) {
+                float dist = squaredDistance(currentSlot, s);
+                if (dist < currentDist) {
+                    currentBest = i;
+                    currentDist = (int) dist;
+                }
+            } else if (dir == Direction.DOWN && s.y > currentSlot.y) {
+                float dist = squaredDistance(currentSlot, s);
+                if (dist < currentDist) {
+                    currentBest = i;
+                    currentDist = (int) dist;
+                }
+
+            } else if (dir == Direction.LEFT && s.x < currentSlot.x) {
+                float dist = squaredDistance(currentSlot, s);
+                if (dist < currentDist) {
+                    currentBest = i;
+                    currentDist = (int) dist;
+                }
+            } else if (dir == Direction.RIGHT && s.x > currentSlot.x) {
+                float dist = squaredDistance(currentSlot, s);
+                if (dist < currentDist) {
+                    currentBest = i;
+                    currentDist = (int) dist;
+                }
+            }
         }
+        return currentBest;
     }
 
 
     public static void register() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            // Reduce cooldown
+            clickCooldown = Math.max(0, clickCooldown - 1);
+            if (clickCooldown > 0) {
+                return;
+            }
+
             if (client.player == null || client.currentScreen == null) {
-                clickCooldown = Math.max(0, clickCooldown - 1);
                 return;
             }
 
@@ -75,85 +109,48 @@ public class InventoryMovement {
                 if (keyMouseWheel) Keys.clear(client.options.pickItemKey);
                 if (keyMouseRight) Keys.clear(client.options.useKey);
 
-
                 long handle = client.getWindow().getHandle();
 
-                // Moving Camera
+                // Moving selected Slot
                 int upCode = ((KeyBindingMixin) up).getBoundKey().getCode();
                 int downCode = ((KeyBindingMixin) down).getBoundKey().getCode();
                 int leftCode = ((KeyBindingMixin) left).getBoundKey().getCode();
                 int rightCode = ((KeyBindingMixin) right).getBoundKey().getCode();
 
-                if (clickCooldown > 0) {
-                    clickCooldown = Math.max(0, clickCooldown - 1);
-                    return;
-                }
+                Slot currentSlot = currentScreen.getScreenHandler().getSlot(selectedSlot);
+                ScreenHandler currentScreenHandler = currentScreen.getScreenHandler();
 
                 if (InputUtil.isKeyPressed(handle, upCode)) {
                     clickCooldown = COOLDOWN;
-                    OnlyKeysModClient.LOGGER.info("Pressed up");
-                    // Edge case for better use with amor/crafting slots.
-
-                    if (9 <= selectedSlot && selectedSlot <= 17) {
-                        handleHighestInventorySlots(client);
-                    } else {
-                        selectedSlot -= 9; // Down one row
-                        if (selectedSlot < 0) {
-                            int diff = Math.abs(selectedSlot - 9); //
-                            selectedSlot = currentScreen.getScreenHandler().slots.size() - diff;
-                        }
-                    }
-
-                    OnlyKeysModClient.LOGGER.info("selectedSlot = " + selectedSlot + " pos = " + currentScreen.getScreenHandler().slots.get(selectedSlot).x + ", " + currentScreen.getScreenHandler().slots.get(selectedSlot).y);
-                    return;
+                    selectedSlot = findClosestSlot(Direction.UP, currentSlot, currentScreenHandler);
                 }
                 if (InputUtil.isKeyPressed(handle, downCode)) {
                     clickCooldown = COOLDOWN;
-                    OnlyKeysModClient.LOGGER.info("Pressed down");
-                    selectedSlot += 9; // Up one row
-                    if (selectedSlot >= currentScreen.getScreenHandler().slots.size()) {
-                        selectedSlot = Math.abs(selectedSlot - currentScreen.getScreenHandler().slots.size());
-                    }
-                    OnlyKeysModClient.LOGGER.info("selectedSlot = " + selectedSlot + " pos = " + currentScreen.getScreenHandler().slots.get(selectedSlot).x + ", " + currentScreen.getScreenHandler().slots.get(selectedSlot).y);
-                    return;
+                    selectedSlot = findClosestSlot(Direction.DOWN, currentSlot, currentScreenHandler);
                 }
                 if (InputUtil.isKeyPressed(handle, leftCode)) {
                     clickCooldown = COOLDOWN;
-                    OnlyKeysModClient.LOGGER.info("Pressed left");
-                    selectedSlot -= 1; // Left one column
-                    if (selectedSlot < 0) {
-                        selectedSlot = currentScreen.getScreenHandler().slots.size() - 1;
-                    }
-                    OnlyKeysModClient.LOGGER.info("selectedSlot = " + selectedSlot + " pos = " + currentScreen.getScreenHandler().slots.get(selectedSlot).x + ", " + currentScreen.getScreenHandler().slots.get(selectedSlot).y);
-                    return;
+                    selectedSlot = findClosestSlot(Direction.LEFT, currentSlot, currentScreenHandler);
                 }
                 if (InputUtil.isKeyPressed(handle, rightCode)) {
                     clickCooldown = COOLDOWN;
-                    OnlyKeysModClient.LOGGER.info("Pressed right");
-                    selectedSlot += 1; // Right one column
-                    if (selectedSlot >= currentScreen.getScreenHandler().slots.size()) {
-                        selectedSlot = 0;
-                    }
-                    OnlyKeysModClient.LOGGER.info("selectedSlot = " + selectedSlot + " pos = " + currentScreen.getScreenHandler().slots.get(selectedSlot).x + ", " + currentScreen.getScreenHandler().slots.get(selectedSlot).y);
-                    return;
+                    selectedSlot = findClosestSlot(Direction.RIGHT, currentSlot, currentScreenHandler);
                 }
-
-
 
                 // Clicking Mouse
                 int leftClickCode = ((KeyBindingMixin) leftClick).getBoundKey().getCode();
                 int wheelClickCode = ((KeyBindingMixin) wheelClick).getBoundKey().getCode();
                 int rightClickCode = ((KeyBindingMixin) rightClick).getBoundKey().getCode();
 
-
                 if (InputUtil.isKeyPressed(handle, leftClickCode)) {
                     // If Shift is pressed use quick move instead
                     if (Keys.shiftPressed(handle)) {
                         client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.QUICK_MOVE, client.player);
                     } else {
+                        OnlyKeysModClient.LOGGER.info("Clicking Slot " + selectedSlot);
                         client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.PICKUP, client.player);
                     }
-                    client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.PICKUP, client.player);
+                    clickCooldown = COOLDOWN;
                     keyMouseLeft = true;
                 } else {
                     keyMouseLeft = false;
@@ -162,6 +159,7 @@ public class InventoryMovement {
                 if (InputUtil.isKeyPressed(handle, wheelClickCode)) {
                     // Create new Stack with ItemStack from selected slot on players cursorStack
                     client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 2, SlotActionType.CLONE, client.player);
+                    clickCooldown = COOLDOWN;
                     keyMouseWheel = true;
                 } else {
                     keyMouseWheel = false;
@@ -174,6 +172,7 @@ public class InventoryMovement {
                     } else {
                         client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 1, SlotActionType.PICKUP, client.player);
                     }
+                    clickCooldown = COOLDOWN;
                     keyMouseRight = true;
                 } else {
                     keyMouseRight = false;

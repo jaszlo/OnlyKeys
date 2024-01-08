@@ -18,24 +18,6 @@ public class MouseMovement {
     private static boolean keyMouseLeft = false;
     private static boolean keyMouseWheel = false;
     private static boolean keyMouseRight = false;
-
-    private static void playerAttack(MinecraftClient client) {
-        assert client.player != null;
-        assert client.world != null;
-        assert client.interactionManager != null;
-
-
-        final int PLAYER_RANGE = 5;
-        HitResult hitResult = client.player.raycast(PLAYER_RANGE, 1.0f, false);
-
-
-        if (hitResult.getType() == HitResult.Type.ENTITY) {
-            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-            client.interactionManager.attackEntity(client.player, entityHitResult.getEntity());
-            client.player.swingHand(Hand.MAIN_HAND);
-        }
-    }
-
     public static void register() {
         WorldRenderEvents.START.register(context -> {
             MinecraftClient client = MinecraftClient.getInstance();

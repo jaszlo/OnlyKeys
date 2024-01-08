@@ -25,17 +25,10 @@ public class AbstractInventoryScreenMixin {
         if (XY == null) {
             return;
         }
-
         // -1 to account for the border
         int x = ((HandledScreenMixin) this).getX() - 1;
         int y = ((HandledScreenMixin) this).getY() - 1;
-        // Slot Index (in the player inventory)
-        // 0    = craftingResult
-        // 1-4  = craftingGrid
-        // 5-8  = armor
-        // 9-35 = inventory
-        // 36   = offhand
-        // 37-44= hotbar
+
         // Slot Offset
         x += XY[0];
         y += XY[1];
