@@ -7,6 +7,8 @@
   },
   "client": [
     "AbstractInventoryScreenMixin",
+    "ChangeGameModeMixin",
+    "CreativeInventoryScreenMixin",
     "HandledScreenMixin",
     "KeyBindingMixin",
     "ScreenMixin"

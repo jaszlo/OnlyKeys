@@ -7,6 +7,7 @@ import net.jasper.onlykeys.mod.util.Keys;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -56,7 +57,7 @@ public class InventoryMovement {
                 continue;
             }
             // Find best match
-            if        (dir == Direction.UP && s.y < currentSlot.y) {
+            if (dir == Direction.UP && s.y < currentSlot.y) {
                 float dist = squaredDistance(currentSlot, s);
                 if (dist < currentDist) {
                     currentBest = i;
@@ -87,6 +88,17 @@ public class InventoryMovement {
     }
 
 
+    private static void handleCreativeClick(long handle, ScreenHandler currentScreenHandler, MinecraftClient client) {
+        assert client.player != null;
+        if (Keys.shiftPressed(handle)) {
+            ItemStack stack = client.player.getInventory().getStack(selectedSlot).copy();
+            stack.setCount(stack.getMaxCount());
+            currentScreenHandler.setCursorStack(stack);
+        } else {
+            currentScreenHandler.setCursorStack(client.player.getInventory().getStack(selectedSlot).copy());
+        }
+    }
+
     public static void register() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             // Reduce cooldown
@@ -100,9 +112,10 @@ public class InventoryMovement {
             }
 
             if (client.currentScreen instanceof AbstractInventoryScreen<?> currentScreen) {
-                // Handle Key presses to change/move the selected slot
-
                 assert client.interactionManager != null;
+
+                // If in creative inventory and currently searching for an item, do nothing unless search "finished" (?)
+                // Todo: SearchBox needs to be toggled off/on focus somehow
 
                 // Clearing Keys if they were pressed via OnlyKeys
                 if (keyMouseLeft) Keys.clear(client.options.attackKey);
@@ -144,11 +157,17 @@ public class InventoryMovement {
 
                 if (InputUtil.isKeyPressed(handle, leftClickCode)) {
                     // If Shift is pressed use quick move instead
-                    if (Keys.shiftPressed(handle)) {
-                        client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.QUICK_MOVE, client.player);
+                    // Survival
+                    if (!client.interactionManager.hasCreativeInventory()) {
+                        if (Keys.shiftPressed(handle)) {
+                            client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.QUICK_MOVE, client.player);
+                        } else {
+                            OnlyKeysModClient.LOGGER.info("Clicking Slot " + selectedSlot);
+                            client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.PICKUP, client.player);
+                        }
+                    // Creative
                     } else {
-                        OnlyKeysModClient.LOGGER.info("Clicking Slot " + selectedSlot);
-                        client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 0, SlotActionType.PICKUP, client.player);
+                        handleCreativeClick(handle, currentScreen.getScreenHandler(), client);
                     }
                     clickCooldown = COOLDOWN;
                     keyMouseLeft = true;
@@ -157,20 +176,33 @@ public class InventoryMovement {
                 }
 
                 if (InputUtil.isKeyPressed(handle, wheelClickCode)) {
-                    // Create new Stack with ItemStack from selected slot on players cursorStack
-                    client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 2, SlotActionType.CLONE, client.player);
-                    clickCooldown = COOLDOWN;
-                    keyMouseWheel = true;
+                    // Survival
+                    if (!client.interactionManager.hasCreativeInventory()) {
+                        // Create new Stack with ItemStack from selected slot on players cursorStack
+                        client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 2, SlotActionType.CLONE, client.player);
+                        clickCooldown = COOLDOWN;
+                        keyMouseWheel = true;
+                    // Creative
+                    } else {
+                        client.interactionManager.pickFromInventory(selectedSlot);
+                        //handleCreativeClick(handle, currentScreen.getScreenHandler(), client);
+                    }
                 } else {
                     keyMouseWheel = false;
                 }
 
                 if (InputUtil.isKeyPressed(handle, rightClickCode)) {
-                    // If Shift is pressed use quick move instead
-                    if (Keys.shiftPressed(handle)) {
-                        client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 1, SlotActionType.QUICK_MOVE, client.player);
+                    // Survival
+                    if (!client.interactionManager.hasCreativeInventory()) {
+                        // If Shift is pressed use quick move instead
+                        if (Keys.shiftPressed(handle)) {
+                            client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 1, SlotActionType.QUICK_MOVE, client.player);
+                        } else {
+                            client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 1, SlotActionType.PICKUP, client.player);
+                        }
+                    // Creative
                     } else {
-                        client.interactionManager.clickSlot(currentScreen.getScreenHandler().syncId, selectedSlot, 1, SlotActionType.PICKUP, client.player);
+                        handleCreativeClick(handle, currentScreen.getScreenHandler(), client);
                     }
                     clickCooldown = COOLDOWN;
                     keyMouseRight = true;
