@@ -1,6 +1,7 @@
-package net.jasper.onlykeys.mixin;
+package net.jasper.onlykeys.mixin.screens;
 
 import net.jasper.onlykeys.mod.keymovements.InventoryMovement;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.util.Identifier;
@@ -26,14 +27,18 @@ public class AbstractInventoryScreenMixin {
             return;
         }
         // -1 to account for the border
-        int x = ((HandledScreenMixin) this).getX() - 1;
-        int y = ((HandledScreenMixin) this).getY() - 1;
+        int x = ((HandledScreenAccessors) this).getX() - 1;
+        int y = ((HandledScreenAccessors) this).getY() - 1;
 
         // Slot Offset
         x += XY[0];
         y += XY[1];
-        context.getMatrices().push();
-        context.drawGuiTexture(HOTBAR_SELECTION_TEXTURE,  x, y, 18, 18);
-        context.getMatrices().pop();
+        int finalY = y;
+        int finalX = x;
+        MinecraftClient.getInstance().execute(() -> {
+            context.getMatrices().push();
+            context.drawGuiTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18);
+            context.getMatrices().pop();
+        });
     }
 }

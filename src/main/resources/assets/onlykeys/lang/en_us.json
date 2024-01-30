@@ -1,0 +1,18 @@
+{
+
+  "onlykeys.keybinds.category": "OnlyKeys",
+  "onlykeys.keybinds.cameraUp": "Camera Up",
+  "onlykeys.keybinds.cameraDown": "Camera Down",
+  "onlykeys.keybinds.cameraLeft": "Camera Left",
+  "onlykeys.keybinds.cameraRight": "Camera Right",
+  "onlykeys.keybinds.slotUp": "Move slot Up",
+  "onlykeys.keybinds.slotDown":"Move slot Down",
+  "onlykeys.keybinds.slotLeft": "Move slot Left",
+  "onlykeys.keybinds.slotRight":"Move slot Right",
+  "onlykeys.keybinds.leftClick": "Left Click",
+  "onlykeys.keybinds.rightClick": "Right Click",
+  "onlykeys.keybinds.wheelClick": "Wheel Click",
+  "onlykeys.keybinds.scrollUp": "Creative Inventory Scroll Up",
+  "onlykeys.keybinds.scrollDown": "Creative Inventory Scroll Down",
+  "onlykeys.keybinds.changeCreativeTab": "Change Creative Tab"
+}

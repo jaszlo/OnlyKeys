@@ -6,11 +6,13 @@
     "defaultRequire": 1
   },
   "client": [
-    "AbstractInventoryScreenMixin",
+    "screens.AbstractInventoryScreenMixin",
     "ChangeGameModeMixin",
-    "CreativeInventoryScreenMixin",
-    "HandledScreenMixin",
-    "KeyBindingMixin",
-    "ScreenMixin"
+    "screens.CreativeInventoryScreenAccessors",
+    "screens.HandledScreenAccessors",
+    "KeyBindingAccessors",
+    "mouse.MouseAccessors",
+    "mouse.MouseMixin",
+    "screens.ScreenMixin"
   ]
 }

@@ -18,33 +18,52 @@ public class Keys {
         return InputUtil.isKeyPressed(handle, InputUtil.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(handle, InputUtil.GLFW_KEY_RIGHT_SHIFT);
     }
 
+    private static final String CATEGORY = "onlykeys.keybinds.category";
+
     // Moving Camera
-    public static KeyBinding up    = new KeyBinding("Camera Up/Move Slot Up", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, "OnlyKeys");
-    public static KeyBinding down  = new KeyBinding("Camera Down/Move Slot Down", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, "OnlyKeys");
-    public static KeyBinding left  = new KeyBinding("Camera Left/Move Slot Left", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, "OnlyKeys");
-    public static KeyBinding right = new KeyBinding("Camera Right/Move Slot Right", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "OnlyKeys");
+    public static final KeyBinding cameraUp = new KeyBinding("onlykeys.keybinds.cameraUp", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, CATEGORY);
+    public static final KeyBinding cameraDown = new KeyBinding("onlykeys.keybinds.cameraDown", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY);
+    public static final KeyBinding cameraLeft = new KeyBinding("onlykeys.keybinds.cameraLeft", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
+    public static final KeyBinding cameraRight = new KeyBinding("onlykeys.keybinds.cameraRight", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
+
+    // Moving Inventory
+    public static final KeyBinding slotUp = new KeyBinding("onlykeys.keybinds.slotUp", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, CATEGORY);
+    public static final KeyBinding slotDown = new KeyBinding("onlykeys.keybinds.slotDown", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY);
+    public static final KeyBinding slotLeft = new KeyBinding("onlykeys.keybinds.slotLeft", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
+    public static final KeyBinding slotRight = new KeyBinding("onlykeys.keybinds.slotRight", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
+
 
     // Clicking Mouse
-    public static KeyBinding leftClick  = new KeyBinding("Left Click", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Y, "OnlyKeys");
-    public static KeyBinding wheelClick = new KeyBinding("Wheel Click", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, "OnlyKeys");
-    public static KeyBinding rightClick = new KeyBinding("Right Click", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, "OnlyKeys");
+    public static final KeyBinding leftClick  = new KeyBinding("onlykeys.keybinds.leftClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Y, CATEGORY);
+    public static final KeyBinding wheelClick = new KeyBinding("onlykeys.keybinds.wheelClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, CATEGORY);
+    public static final KeyBinding rightClick = new KeyBinding("onlykeys.keybinds.rightClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, CATEGORY);
+
+    public static final KeyBinding[] MOUSE_KEYBINDINGS = {
+        leftClick,
+        wheelClick,
+        rightClick
+    };
 
     // Scrolling via Keyboard
-    public static KeyBinding scrollUp   = new KeyBinding("Scroll Creative Menu Up", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_PAGE_UP, "OnlyKeys");
-    public static KeyBinding scrollDown = new KeyBinding("Scroll Creative Menu Down", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_PAGE_DOWN, "OnlyKeys");
+    public static KeyBinding scrollUp   = new KeyBinding("onlykeys.keybinds.scrollUp", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_PAGE_UP, CATEGORY);
+    public static KeyBinding scrollDown = new KeyBinding("onlykeys.keybinds.scrollDown", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_PAGE_DOWN, CATEGORY);
 
     // Changing creative tab
-    public static KeyBinding changeCreativeTab  = new KeyBinding("Change Creative Tab", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_TAB, "OnlyKeys");
+    public static KeyBinding changeCreativeTab  = new KeyBinding("onlykeys.keybinds.changeCreativeTab", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_TAB, CATEGORY);
 
     public static final KeyBinding[] ONLYKEYS_KEYBINDINGS = new KeyBinding[] {
-            up, down, left, right, leftClick, wheelClick, rightClick, scrollUp, scrollDown, changeCreativeTab
+            cameraUp, cameraDown, cameraLeft, cameraRight, slotUp, slotDown, slotLeft, slotRight, leftClick, wheelClick, rightClick, scrollUp, scrollDown, changeCreativeTab
     };
 
     public static void register() {
-        KeyBindingHelper.registerKeyBinding(up);
-        KeyBindingHelper.registerKeyBinding(down);
-        KeyBindingHelper.registerKeyBinding(left);
-        KeyBindingHelper.registerKeyBinding(right);
+        KeyBindingHelper.registerKeyBinding(cameraUp);
+        KeyBindingHelper.registerKeyBinding(cameraDown);
+        KeyBindingHelper.registerKeyBinding(cameraLeft);
+        KeyBindingHelper.registerKeyBinding(cameraRight);
+        KeyBindingHelper.registerKeyBinding(slotUp);
+        KeyBindingHelper.registerKeyBinding(slotDown);
+        KeyBindingHelper.registerKeyBinding(slotLeft);
+        KeyBindingHelper.registerKeyBinding(slotRight);
         KeyBindingHelper.registerKeyBinding(leftClick);
         KeyBindingHelper.registerKeyBinding(wheelClick);
         KeyBindingHelper.registerKeyBinding(rightClick);

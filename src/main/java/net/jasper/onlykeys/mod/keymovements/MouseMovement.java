@@ -1,7 +1,7 @@
 package net.jasper.onlykeys.mod.keymovements;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.jasper.onlykeys.mixin.KeyBindingMixin;
+import net.jasper.onlykeys.mixin.KeyBindingAccessors;
 import net.jasper.onlykeys.mod.util.Keys;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
@@ -39,10 +39,10 @@ public class MouseMovement {
             float sensitivity = client.options.getMouseSensitivity().getValue().floatValue() * 2 + MINIMUM_SENSITIVITY;
 
             // Moving Camera
-            int upCode = ((KeyBindingMixin) up).getBoundKey().getCode();
-            int downCode = ((KeyBindingMixin) down).getBoundKey().getCode();
-            int leftCode = ((KeyBindingMixin) left).getBoundKey().getCode();
-            int rightCode = ((KeyBindingMixin) right).getBoundKey().getCode();
+            int upCode = ((KeyBindingAccessors) cameraUp).getBoundKey().getCode();
+            int downCode = ((KeyBindingAccessors) cameraDown).getBoundKey().getCode();
+            int leftCode = ((KeyBindingAccessors) cameraLeft).getBoundKey().getCode();
+            int rightCode = ((KeyBindingAccessors) cameraRight).getBoundKey().getCode();
 
 
             if (InputUtil.isKeyPressed(handle, upCode)) client.player.setPitch(client.player.getPitch() - sensitivity);
@@ -51,9 +51,9 @@ public class MouseMovement {
             if (InputUtil.isKeyPressed(handle, rightCode)) client.player.setYaw(client.player.getYaw() + sensitivity);
 
             // Clicking Mouse
-            int leftClickCode = ((KeyBindingMixin) leftClick).getBoundKey().getCode();
-            int wheelClickCode = ((KeyBindingMixin) wheelClick).getBoundKey().getCode();
-            int rightClickCode = ((KeyBindingMixin) rightClick).getBoundKey().getCode();
+            int leftClickCode = ((KeyBindingAccessors) leftClick).getBoundKey().getCode();
+            int wheelClickCode = ((KeyBindingAccessors) wheelClick).getBoundKey().getCode();
+            int rightClickCode = ((KeyBindingAccessors) rightClick).getBoundKey().getCode();
 
 
             if (InputUtil.isKeyPressed(handle, leftClickCode)) {
