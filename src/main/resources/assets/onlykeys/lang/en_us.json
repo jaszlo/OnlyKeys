@@ -14,5 +14,6 @@
   "onlykeys.keybinds.wheelClick": "Wheel Click",
   "onlykeys.keybinds.scrollUp": "Creative Inventory Scroll Up",
   "onlykeys.keybinds.scrollDown": "Creative Inventory Scroll Down",
-  "onlykeys.keybinds.changeCreativeTab": "Change Creative Tab"
+  "onlykeys.keybinds.changeCreativeTab": "Change Creative Tab",
+  "onlykeys.keybinds.openQuickSlotMenu": "Open Quick Slot Menu"
 }

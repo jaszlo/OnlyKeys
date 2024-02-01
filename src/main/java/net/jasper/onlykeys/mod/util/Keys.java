@@ -1,6 +1,8 @@
 package net.jasper.onlykeys.mod.util;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.jasper.onlykeys.mixin.KeyBindingAccessors;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -32,16 +34,18 @@ public class Keys {
     public static final KeyBinding slotLeft = new KeyBinding("onlykeys.keybinds.slotLeft", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
     public static final KeyBinding slotRight = new KeyBinding("onlykeys.keybinds.slotRight", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
 
-
     // Clicking Mouse
     public static final KeyBinding leftClick  = new KeyBinding("onlykeys.keybinds.leftClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Y, CATEGORY);
-    public static final KeyBinding wheelClick = new KeyBinding("onlykeys.keybinds.wheelClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, CATEGORY);
     public static final KeyBinding rightClick = new KeyBinding("onlykeys.keybinds.rightClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, CATEGORY);
+    public static final KeyBinding wheelClick = new KeyBinding("onlykeys.keybinds.wheelClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, CATEGORY);
+
+    // Open QuickSlot menu
+    public static final KeyBinding toggleQuickSlotMenu = new KeyBinding("onlykeys.keybinds.openQuickSlotMenu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_L, CATEGORY);
 
     public static final KeyBinding[] MOUSE_KEYBINDINGS = {
         leftClick,
+        rightClick,
         wheelClick,
-        rightClick
     };
 
     // Scrolling via Keyboard
@@ -52,23 +56,39 @@ public class Keys {
     public static KeyBinding changeCreativeTab  = new KeyBinding("onlykeys.keybinds.changeCreativeTab", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_TAB, CATEGORY);
 
     public static final KeyBinding[] ONLYKEYS_KEYBINDINGS = new KeyBinding[] {
-            cameraUp, cameraDown, cameraLeft, cameraRight, slotUp, slotDown, slotLeft, slotRight, leftClick, wheelClick, rightClick, scrollUp, scrollDown, changeCreativeTab
+            cameraUp, cameraDown, cameraLeft, cameraRight, slotUp, slotDown, slotLeft, slotRight, leftClick, wheelClick, rightClick, scrollUp, scrollDown, changeCreativeTab, toggleQuickSlotMenu
     };
 
+
+    private static final int MENU_TOGGLE_COOLDOWN = 5;
+    private static int currentMenuToggleCooldown = 0;
+
     public static void register() {
-        KeyBindingHelper.registerKeyBinding(cameraUp);
-        KeyBindingHelper.registerKeyBinding(cameraDown);
-        KeyBindingHelper.registerKeyBinding(cameraLeft);
-        KeyBindingHelper.registerKeyBinding(cameraRight);
-        KeyBindingHelper.registerKeyBinding(slotUp);
-        KeyBindingHelper.registerKeyBinding(slotDown);
-        KeyBindingHelper.registerKeyBinding(slotLeft);
-        KeyBindingHelper.registerKeyBinding(slotRight);
-        KeyBindingHelper.registerKeyBinding(leftClick);
-        KeyBindingHelper.registerKeyBinding(wheelClick);
-        KeyBindingHelper.registerKeyBinding(rightClick);
-        KeyBindingHelper.registerKeyBinding(scrollUp);
-        KeyBindingHelper.registerKeyBinding(scrollDown);
-        KeyBindingHelper.registerKeyBinding(changeCreativeTab);
+        for (KeyBinding b : ONLYKEYS_KEYBINDINGS) {
+            KeyBindingHelper.registerKeyBinding(b);
+        }
+
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            if (currentMenuToggleCooldown > 0) {
+                currentMenuToggleCooldown--;
+                return;
+            }
+
+            if (client.player == null || client.player.isCreative()) {
+                return;
+            }
+
+            int toggleMenuCode = ((KeyBindingAccessors)toggleQuickSlotMenu).getBoundKey().getCode();
+            if (InputUtil.isKeyPressed(client.getWindow().getHandle(), toggleMenuCode)) {
+                ScreenOverlay.toggle();
+                currentMenuToggleCooldown = MENU_TOGGLE_COOLDOWN;
+            }
+
+            // Just to make sure it's not rendered by accident
+            if (client.currentScreen == null) {
+                ScreenOverlay.open = false;
+            }
+
+        });
     }
 }

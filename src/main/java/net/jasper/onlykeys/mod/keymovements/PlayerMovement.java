@@ -11,7 +11,7 @@ import net.minecraft.util.hit.HitResult;
 
 import static net.jasper.onlykeys.mod.util.Keys.*;
 
-public class MouseMovement {
+public class PlayerMovement {
 
     private static final float MINIMUM_SENSITIVITY = 0.25f;
 
@@ -55,33 +55,28 @@ public class MouseMovement {
             int wheelClickCode = ((KeyBindingAccessors) wheelClick).getBoundKey().getCode();
             int rightClickCode = ((KeyBindingAccessors) rightClick).getBoundKey().getCode();
 
+            // LEFT
+            boolean pressedLeft = InputUtil.isKeyPressed(handle, leftClickCode);
 
-            if (InputUtil.isKeyPressed(handle, leftClickCode)) {
-                client.player.swingHand(Hand.MAIN_HAND);
-                client.options.attackKey.setPressed(true);
-                // Check if the player is attacking an entity
-                if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-                    EntityHitResult hitResult = (EntityHitResult) client.crosshairTarget;
-                    client.interactionManager.attackEntity(client.player, hitResult.getEntity());
-                }
-                keyMouseLeft = true;
-            } else {
-                keyMouseLeft = false;
+            if (pressedLeft) client.player.swingHand(Hand.MAIN_HAND);
+            else if (client.player.handSwinging) client.interactionManager.cancelBlockBreaking();
+            client.options.attackKey.setPressed(pressedLeft);
+            keyMouseLeft = pressedLeft;
+            // Check if the player is attacking an entity
+            if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.ENTITY) {
+                EntityHitResult hitResult = (EntityHitResult) client.crosshairTarget;
+                client.interactionManager.attackEntity(client.player, hitResult.getEntity());
             }
 
-            if (InputUtil.isKeyPressed(handle, wheelClickCode)) {
-                client.options.pickItemKey.setPressed(true);
-                keyMouseWheel = true;
-            } else {
-                keyMouseWheel = false;
-            }
+            // WHEEL
+            boolean pressedWheel = InputUtil.isKeyPressed(handle, wheelClickCode);
+            client.options.pickItemKey.setPressed(pressedWheel);
+            keyMouseWheel = pressedWheel;
 
-            if (InputUtil.isKeyPressed(handle, rightClickCode)) {
-                client.options.useKey.setPressed(true);
-                keyMouseRight = true;
-            } else {
-                keyMouseRight = false;
-            }
+            // RIGHT
+            boolean pressedRight = InputUtil.isKeyPressed(handle, rightClickCode);
+            client.options.useKey.setPressed(pressedRight);
+            keyMouseRight = pressedRight;
         });
     }
 

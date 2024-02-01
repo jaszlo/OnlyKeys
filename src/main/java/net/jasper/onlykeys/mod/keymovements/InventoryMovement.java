@@ -4,9 +4,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.jasper.onlykeys.mixin.screens.HandledScreenAccessors;
 import net.jasper.onlykeys.mixin.KeyBindingAccessors;
 import net.jasper.onlykeys.mixin.mouse.MouseAccessors;
+import net.jasper.onlykeys.mod.util.Direction;
 import net.jasper.onlykeys.mod.util.Keys;
+import net.jasper.onlykeys.mod.util.ScreenOverlay;
+import net.jasper.onlykeys.mod.util.SurvivalInventorySlots;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
@@ -25,8 +28,8 @@ public class InventoryMovement {
 
     private static final int[] MOUSE_BUTTONS = {0, 1, 2};
     private static final int LEFT_CLICK = 0;
-    private static final int WHEEL_CLICK = 1;
-    private static final int RIGHT_CLICK = 2;
+    private static final int RIGHT_CLICK = 1;
+    private static final int WHEEL_CLICK = 2;
     private static final boolean[] mouseButtonsPressed = { false, false, false };
     private static final int[] mouseButtonClickCodes = { 0, 0, 0 };
 
@@ -40,18 +43,19 @@ public class InventoryMovement {
         return new int[]{ s.x, s.y };
     }
 
-    private enum Direction {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
-    }
-
     private static float squaredDistance(Slot s1, Slot s2) {
         return (float) (Math.pow(s1.x - s2.x, 2) + Math.pow(s1.y - s2.y, 2));
     }
 
     private static int findClosestSlot(Direction dir, Slot currentSlot, ScreenHandler currentScreenHandler) {
+        assert MinecraftClient.getInstance().player != null;
+        if (!MinecraftClient.getInstance().player.isCreative()) {
+            int slot = SurvivalInventorySlots.checkEdgeCase(dir, currentSlot, currentScreenHandler);
+            if (slot > 0) {
+                return slot;
+            }
+        }
+
         int currentBest = selectedSlot;
         float currentDist = Float.MAX_VALUE;
         // Create a list with all slots that have a lower y value than the current slot (lower = higher on screen)
@@ -107,7 +111,8 @@ public class InventoryMovement {
                 return;
             }
 
-            if (client.currentScreen instanceof AbstractInventoryScreen<?> currentScreen) {
+            if (ScreenOverlay.isAllowedScreen(client.currentScreen)) {
+                HandledScreen<?> handledScreen = (HandledScreen<?>) client.currentScreen;
                 assert client.interactionManager != null;
 
                 int[] xy = getXYForSlot();
@@ -121,7 +126,7 @@ public class InventoryMovement {
                 accessibleMouse.setX(scale * x); accessibleMouse.setY(scale * y);
 
                 // This will only take effect in the next tick therefore continue with all else being executed in the next tick
-                InputUtil.setCursorParameters(client.getWindow().getHandle(), InputUtil.GLFW_CURSOR_DISABLED, x, y);
+                // InputUtil.setCursorParameters(client.getWindow().getHandle(), InputUtil.GLFW_CURSOR_DISABLED, x, y);
 
                 // Clearing Keys if they were pressed via OnlyKeys
                 if (mouseButtonsPressed[LEFT_CLICK]) Keys.clear(client.options.attackKey);
@@ -136,8 +141,8 @@ public class InventoryMovement {
                 int leftCode = ((KeyBindingAccessors) slotLeft).getBoundKey().getCode();
                 int rightCode = ((KeyBindingAccessors) slotRight).getBoundKey().getCode();
 
-                Slot currentSlot = currentScreen.getScreenHandler().getSlot(selectedSlot);
-                ScreenHandler currentScreenHandler = currentScreen.getScreenHandler();
+                Slot currentSlot = handledScreen.getScreenHandler().getSlot(selectedSlot);
+                ScreenHandler currentScreenHandler = handledScreen.getScreenHandler();
 
                 if (InputUtil.isKeyPressed(handle, upCode)) {
                     clickCooldown = COOLDOWN;
