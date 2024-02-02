@@ -8,6 +8,12 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 public class Keys {
+
+    public static final int[] MOUSE_BUTTONS = {0, 1, 2};
+    public static final int LEFT_CLICK = 0;
+    public static final int RIGHT_CLICK = 1;
+    public static final int WHEEL_CLICK = 2;
+
     public static void clear(KeyBinding key) {
         int c = 0;
         final int LIMIT = 100;
@@ -33,6 +39,9 @@ public class Keys {
     public static final KeyBinding slotDown = new KeyBinding("onlykeys.keybinds.slotDown", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY);
     public static final KeyBinding slotLeft = new KeyBinding("onlykeys.keybinds.slotLeft", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
     public static final KeyBinding slotRight = new KeyBinding("onlykeys.keybinds.slotRight", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
+    public static final KeyBinding[] slotMoveKeys = new KeyBinding[]{
+            slotUp, slotDown, slotLeft, slotRight
+    };
 
     // Clicking Mouse
     public static final KeyBinding leftClick  = new KeyBinding("onlykeys.keybinds.leftClick", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Y, CATEGORY);

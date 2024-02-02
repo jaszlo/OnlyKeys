@@ -28,13 +28,16 @@ public class QuickSlotTextFieldCreator {
         // When creating a new allowed screen set selected slot to 0 or the last selected slot which is set on close
         InventoryMovement.selectedSlot = ScreenOverlay.screenSlotMapping.getOrDefault(this.getClass(), 0);
 
+        // Also reset cooldown to prevent from clicking slot instantly
+        InventoryMovement.resetClickCooldown();
+
         if (client.player == null || client.player.isCreative()) {
             return;
         }
-        int guiScale = client.options.getGuiScale().getValue();
-        int width = 32 * guiScale;
-        int height = 4 * guiScale;
-        int yDiff = client.currentScreen.getTitle().toString().contains("chestDouble") ? 120 : 92;
+
+        int width = 32;
+        int height = 12;
+        int yDiff = client.currentScreen.getTitle().toString().contains("chestDouble") ? 124 : 96;
         ScreenOverlay.slotEntryField = new TextFieldWidget(
                 client.textRenderer,
                 client.getWindow().getScaledWidth() / 2 - width / 2,
@@ -46,7 +49,7 @@ public class QuickSlotTextFieldCreator {
         ScreenOverlay.slotEntryField.setEditable(true);
         ScreenOverlay.slotEntryField.active = true;
         ScreenOverlay.slotEntryField.setFocused(true);
-        ScreenOverlay.slotEntryField.setMaxLength(3);
+        ScreenOverlay.slotEntryField.setMaxLength(2);
         ScreenOverlay.slotEntryField.setPlaceholder(Text.of("Enter Slot ID"));
         ((ScreenAccessor) this).addDrawableChildInvoker(ScreenOverlay.slotEntryField);
     }

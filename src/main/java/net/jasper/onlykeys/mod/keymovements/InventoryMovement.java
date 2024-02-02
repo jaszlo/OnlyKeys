@@ -23,15 +23,17 @@ public class InventoryMovement {
 
     public static int selectedSlot = 36; // First Hotbar Slot
 
-    private static int clickCooldown = 0;
-    private static final int COOLDOWN = 2; // Ticks
+    // Cooldown is given in game ticks
+    private static int currentClickCooldown = 0;
+    private static final int CLICK_COOLDOWN = 4;
+    private static int currentMoveCooldown = 0;
+    private static final int MOVE_COOLDOWN = 3;
 
-    private static final int[] MOUSE_BUTTONS = {0, 1, 2};
-    private static final int LEFT_CLICK = 0;
-    private static final int RIGHT_CLICK = 1;
-    private static final int WHEEL_CLICK = 2;
+    public static void resetClickCooldown() {
+        currentClickCooldown = CLICK_COOLDOWN;
+    }
+
     private static final boolean[] mouseButtonsPressed = { false, false, false };
-    private static final int[] mouseButtonClickCodes = { 0, 0, 0 };
 
     public static int[] getXYForSlot() {
         if (MinecraftClient.getInstance().currentScreen == null) {
@@ -47,54 +49,38 @@ public class InventoryMovement {
         return (float) (Math.pow(s1.x - s2.x, 2) + Math.pow(s1.y - s2.y, 2));
     }
 
+
     private static int findClosestSlot(Direction dir, Slot currentSlot, ScreenHandler currentScreenHandler) {
         assert MinecraftClient.getInstance().player != null;
         if (!MinecraftClient.getInstance().player.isCreative()) {
             int slot = SurvivalInventorySlots.checkEdgeCase(dir, currentSlot, currentScreenHandler);
-            if (slot > 0) {
-                return slot;
-            }
+            if (slot > 0) return slot;
         }
 
         int currentBest = selectedSlot;
         float currentDist = Float.MAX_VALUE;
-        // Create a list with all slots that have a lower y value than the current slot (lower = higher on screen)
+
         for (int i = 0; i < currentScreenHandler.slots.size(); i++) {
             Slot s = currentScreenHandler.slots.get(i);
-            // Skip same slot
-            if (s == currentSlot) {
-                continue;
-            }
-            // Find best match
-            if (dir == Direction.UP && s.y < currentSlot.y) {
-                float dist = squaredDistance(currentSlot, s);
-                if (dist < currentDist) {
-                    currentBest = i;
-                    currentDist = (int) dist;
-                }
-            } else if (dir == Direction.DOWN && s.y > currentSlot.y) {
-                float dist = squaredDistance(currentSlot, s);
-                if (dist < currentDist) {
-                    currentBest = i;
-                    currentDist = (int) dist;
-                }
+            if (s == currentSlot) continue;
 
-            } else if (dir == Direction.LEFT && s.x < currentSlot.x) {
-                float dist = squaredDistance(currentSlot, s);
-                if (dist < currentDist) {
-                    currentBest = i;
-                    currentDist = (int) dist;
-                }
-            } else if (dir == Direction.RIGHT && s.x > currentSlot.x) {
-                float dist = squaredDistance(currentSlot, s);
-                if (dist < currentDist) {
-                    currentBest = i;
-                    currentDist = (int) dist;
-                }
+            float dist = squaredDistance(currentSlot, s);
+
+            boolean updateBest = switch (dir) {
+                case UP -> s.y < currentSlot.y && dist < currentDist;
+                case DOWN -> s.y > currentSlot.y && dist < currentDist;
+                case LEFT -> s.x < currentSlot.x && dist < currentDist;
+                case RIGHT -> s.x > currentSlot.x && dist < currentDist;
+            };
+
+            if (updateBest) {
+                currentBest = i;
+                currentDist = dist;
             }
         }
         return currentBest;
     }
+
 
     public static void register() {
         // If in creative inventory and currently searching for an item, do nothing unless search "finished" (?)
@@ -102,10 +88,10 @@ public class InventoryMovement {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             cancelMouse = false;
             // Reduce cooldown
-            clickCooldown = Math.max(0, clickCooldown - 1);
-            if (clickCooldown > 0) {
-                return;
-            }
+            currentClickCooldown = Math.max(0, currentClickCooldown - 1);
+            currentMoveCooldown = Math.max(0, currentMoveCooldown - 1);
+            boolean moveSlotReady = currentMoveCooldown == 0;
+            boolean clickSlotReady = currentClickCooldown == 0;
 
             if (client.player == null || client.currentScreen == null) {
                 return;
@@ -120,12 +106,14 @@ public class InventoryMovement {
                 HandledScreenAccessors mixin = (HandledScreenAccessors) client.currentScreen;
                 double x = (double) xy[0] + (double) mixin.getX() + 2.0;
                 double y = (double) xy[1] + (double) mixin.getY() + 2.0;
+
+                // Cancel usual mouse handling and set position to be over selectedSlot
                 cancelMouse = true;
                 int scale = client.options.getGuiScale().getValue();
                 MouseAccessors accessibleMouse = (MouseAccessors) client.mouse;
                 accessibleMouse.setX(scale * x); accessibleMouse.setY(scale * y);
-
-                // This will only take effect in the next tick therefore continue with all else being executed in the next tick
+                // Hide the cursor, position doesn't matter as it was set above and this will only take effect in the next tick where it will already be overwritten again
+                // Currently disabled for debugging
                 // InputUtil.setCursorParameters(client.getWindow().getHandle(), InputUtil.GLFW_CURSOR_DISABLED, x, y);
 
                 // Clearing Keys if they were pressed via OnlyKeys
@@ -135,59 +123,43 @@ public class InventoryMovement {
 
                 long handle = client.getWindow().getHandle();
 
-                // Moving selected Slot
-                int upCode = ((KeyBindingAccessors) slotUp).getBoundKey().getCode();
-                int downCode = ((KeyBindingAccessors) slotDown).getBoundKey().getCode();
-                int leftCode = ((KeyBindingAccessors) slotLeft).getBoundKey().getCode();
-                int rightCode = ((KeyBindingAccessors) slotRight).getBoundKey().getCode();
+                if (moveSlotReady) { // Moving Selected Slot
+                    Slot currentSlot = handledScreen.getScreenHandler().getSlot(selectedSlot);
+                    ScreenHandler currentScreenHandler = handledScreen.getScreenHandler();
 
-                Slot currentSlot = handledScreen.getScreenHandler().getSlot(selectedSlot);
-                ScreenHandler currentScreenHandler = handledScreen.getScreenHandler();
-
-                if (InputUtil.isKeyPressed(handle, upCode)) {
-                    clickCooldown = COOLDOWN;
-                    selectedSlot = findClosestSlot(Direction.UP, currentSlot, currentScreenHandler);
+                    for (Direction dir : Direction.values()) {
+                        int keyCode = ((KeyBindingAccessors) Keys.slotMoveKeys[dir.ordinal()]).getBoundKey().getCode();
+                        if (InputUtil.isKeyPressed(handle, keyCode)) {
+                            currentMoveCooldown = MOVE_COOLDOWN;
+                            selectedSlot = findClosestSlot(dir, currentSlot, currentScreenHandler);
+                        }
+                    }
                 }
-                if (InputUtil.isKeyPressed(handle, downCode)) {
-                    clickCooldown = COOLDOWN;
-                    selectedSlot = findClosestSlot(Direction.DOWN, currentSlot, currentScreenHandler);
-                }
-                if (InputUtil.isKeyPressed(handle, leftCode)) {
-                    clickCooldown = COOLDOWN;
-                    selectedSlot = findClosestSlot(Direction.LEFT, currentSlot, currentScreenHandler);
-                }
-                if (InputUtil.isKeyPressed(handle, rightCode)) {
-                    clickCooldown = COOLDOWN;
-                    selectedSlot = findClosestSlot(Direction.RIGHT, currentSlot, currentScreenHandler);
-                }
+                if (clickSlotReady) { // Clicking Slot
 
-                // Get KeyCode for MouseButtons
-                for (int button : MOUSE_BUTTONS) {
-                    mouseButtonClickCodes[button] = ((KeyBindingAccessors) MOUSE_KEYBINDINGS[button]).getBoundKey().getCode();
-                }
+                    ScreenHandler handler = client.player.currentScreenHandler;
+                    for (int button : MOUSE_BUTTONS) {
+                        int keyCode = ((KeyBindingAccessors) MOUSE_KEYBINDINGS[button]).getBoundKey().getCode();
+                        boolean pressed = InputUtil.isKeyPressed(handle, keyCode);
+                        mouseButtonsPressed[button] = pressed;
+                        if (!pressed) { continue; }
 
-                ScreenHandler handler = client.player.currentScreenHandler;
+                        accessibleMouse.onMouseButtonInvoker(handle, button, 1, 0);
+                        // Unset mouse in next tick to complete MouseClick event
+                        client.execute(() -> accessibleMouse.onMouseButtonInvoker(handle, button, 0, 0));
+                        currentClickCooldown = CLICK_COOLDOWN;
 
-                for (int button : MOUSE_BUTTONS) {
-                    boolean pressed = InputUtil.isKeyPressed(handle, mouseButtonClickCodes[button]);
-                    mouseButtonsPressed[button] = pressed;
-                    if (!pressed) { continue; }
-
-                    accessibleMouse.onMouseButtonInvoker(handle, button, 1, 0);
-                    // Unset mouse in next tick to complete MouseClick event
-                    client.execute(() -> accessibleMouse.onMouseButtonInvoker(handle, button, 0, 0));
-                    clickCooldown = COOLDOWN;
-
-                    // In Creative use left/wheel to drop stack or single
-                    if (client.player.isCreative() && !handler.getCursorStack().isEmpty()) {
-                        if (button == RIGHT_CLICK) {
-                            client.player.dropItem(handler.getCursorStack(), true);
-                            client.interactionManager.dropCreativeStack(handler.getCursorStack());
-                            handler.setCursorStack(ItemStack.EMPTY);
-                        } else if (button == WHEEL_CLICK) {
-                            ItemStack itemStack = handler.getCursorStack().split(1);
-                            client.player.dropItem(itemStack, true);
-                            client.interactionManager.dropCreativeStack(itemStack);
+                        // In Creative use left/wheel to drop stack or single
+                        if (client.player.isCreative() && !handler.getCursorStack().isEmpty()) {
+                            if (button == RIGHT_CLICK) {
+                                client.player.dropItem(handler.getCursorStack(), true);
+                                client.interactionManager.dropCreativeStack(handler.getCursorStack());
+                                handler.setCursorStack(ItemStack.EMPTY);
+                            } else if (button == WHEEL_CLICK) {
+                                ItemStack itemStack = handler.getCursorStack().split(1);
+                                client.player.dropItem(itemStack, true);
+                                client.interactionManager.dropCreativeStack(itemStack);
+                            }
                         }
                     }
                 }

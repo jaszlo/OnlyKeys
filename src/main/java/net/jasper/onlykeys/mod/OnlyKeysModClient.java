@@ -17,7 +17,6 @@ public class OnlyKeysModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         // Register KeyBindings in Options
         Keys.register();
 
