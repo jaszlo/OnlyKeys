@@ -1,5 +1,6 @@
 package net.jasper.onlykeys.mixin.screens;
 
+import net.jasper.onlykeys.mixin.accessors.ScreenAccessor;
 import net.jasper.onlykeys.mod.keymovements.InventoryMovement;
 import net.jasper.onlykeys.mod.util.ScreenOverlay;
 import net.minecraft.client.MinecraftClient;

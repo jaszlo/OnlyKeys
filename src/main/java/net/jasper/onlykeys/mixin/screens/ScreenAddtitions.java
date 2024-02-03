@@ -1,5 +1,6 @@
 package net.jasper.onlykeys.mixin.screens;
 
+import net.jasper.onlykeys.mixin.accessors.HandledScreenAccessors;
 import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.keymovements.InventoryMovement;
 import net.jasper.onlykeys.mod.util.ScreenOverlay;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 import static net.jasper.onlykeys.mod.util.Keys.ONLYKEYS_KEYBINDINGS;
 
 @Mixin(Screen.class)
-public class ScreenOverlayRenderer {
+public class ScreenAddtitions {
     @Shadow @Nullable protected MinecraftClient client;
 
     @Unique

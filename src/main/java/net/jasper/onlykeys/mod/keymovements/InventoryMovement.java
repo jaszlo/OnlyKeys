@@ -1,9 +1,9 @@
 package net.jasper.onlykeys.mod.keymovements;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.jasper.onlykeys.mixin.screens.HandledScreenAccessors;
-import net.jasper.onlykeys.mixin.KeyBindingAccessors;
-import net.jasper.onlykeys.mixin.mouse.MouseAccessors;
+import net.jasper.onlykeys.mixin.accessors.HandledScreenAccessors;
+import net.jasper.onlykeys.mixin.accessors.KeyBindingAccessors;
+import net.jasper.onlykeys.mixin.accessors.MouseAccessors;
 import net.jasper.onlykeys.mod.util.Direction;
 import net.jasper.onlykeys.mod.util.Keys;
 import net.jasper.onlykeys.mod.util.ScreenOverlay;
@@ -110,6 +110,7 @@ public class InventoryMovement {
                 // Cancel usual mouse handling and set position to be over selectedSlot
                 cancelMouse = true;
                 int scale = client.options.getGuiScale().getValue();
+                scale = scale == 0 ? client.getWindow().getWidth() / client.getWindow().getScaledWidth() : scale;
                 MouseAccessors accessibleMouse = (MouseAccessors) client.mouse;
                 accessibleMouse.setX(scale * x); accessibleMouse.setY(scale * y);
                 // Hide the cursor, position doesn't matter as it was set above and this will only take effect in the next tick where it will already be overwritten again

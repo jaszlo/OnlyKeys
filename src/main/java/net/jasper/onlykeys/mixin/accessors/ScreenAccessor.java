@@ -1,4 +1,4 @@
-package net.jasper.onlykeys.mixin.screens;
+package net.jasper.onlykeys.mixin.accessors;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;

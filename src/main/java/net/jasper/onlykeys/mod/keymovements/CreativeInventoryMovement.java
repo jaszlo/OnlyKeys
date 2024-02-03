@@ -1,8 +1,8 @@
 package net.jasper.onlykeys.mod.keymovements;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.jasper.onlykeys.mixin.screens.CreativeInventoryScreenAccessors;
-import net.jasper.onlykeys.mixin.KeyBindingAccessors;
+import net.jasper.onlykeys.mixin.accessors.CreativeInventoryScreenAccessors;
+import net.jasper.onlykeys.mixin.accessors.KeyBindingAccessors;
 import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.util.Keys;
 import net.minecraft.client.MinecraftClient;

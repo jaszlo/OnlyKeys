@@ -1,4 +1,4 @@
-package net.jasper.onlykeys.mixin.screens;
+package net.jasper.onlykeys.mixin.accessors;
 
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;

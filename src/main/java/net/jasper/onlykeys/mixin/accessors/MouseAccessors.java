@@ -1,4 +1,4 @@
-package net.jasper.onlykeys.mixin.mouse;
+package net.jasper.onlykeys.mixin.accessors;
 
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;

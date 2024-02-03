@@ -1,4 +1,4 @@
-package net.jasper.onlykeys.mixin;
+package net.jasper.onlykeys.mixin.accessors;
 
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;

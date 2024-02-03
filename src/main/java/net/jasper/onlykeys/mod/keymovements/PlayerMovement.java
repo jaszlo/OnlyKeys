@@ -1,7 +1,7 @@
 package net.jasper.onlykeys.mod.keymovements;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.jasper.onlykeys.mixin.KeyBindingAccessors;
+import net.jasper.onlykeys.mixin.accessors.KeyBindingAccessors;
 import net.jasper.onlykeys.mod.util.Keys;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
