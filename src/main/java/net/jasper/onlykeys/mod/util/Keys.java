@@ -83,7 +83,7 @@ public class Keys {
                 return;
             }
 
-            if (client.player == null || client.player.isCreative()) {
+            if (client.player == null) {
                 return;
             }
 

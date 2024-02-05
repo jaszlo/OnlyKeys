@@ -15,6 +15,6 @@
     "screens.CancelItemCountRender",
     "screens.QuickSlotTextFieldCreator",
     "accessors.ScreenAccessor",
-    "screens.ScreenAddtitions"
+    "screens.ScreenAdditions"
   ]
 }

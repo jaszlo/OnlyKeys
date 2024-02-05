@@ -25,7 +25,7 @@ import java.util.Arrays;
 import static net.jasper.onlykeys.mod.util.Keys.ONLYKEYS_KEYBINDINGS;
 
 @Mixin(Screen.class)
-public class ScreenAddtitions {
+public class ScreenAdditions {
     @Shadow @Nullable protected MinecraftClient client;
 
     @Unique
@@ -64,8 +64,7 @@ public class ScreenAddtitions {
         MinecraftClient client = MinecraftClient.getInstance();
         // Disable textField and do not draw numbers
         assert client.player != null;
-        if (client.player.isCreative() || !ScreenOverlay.open) {
-            // Update slots to fix stackCount if set to 1 to show slot numbers
+        if (!ScreenOverlay.open) {
             ScreenOverlay.slotEntryField.setVisible(false);
             return;
         }

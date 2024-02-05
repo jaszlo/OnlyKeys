@@ -32,13 +32,19 @@ public class QuickSlotTextFieldCreator {
         // Also reset cooldown to prevent from clicking slot instantly
         InventoryMovement.resetClickCooldown();
 
-        if (client.player == null || client.player.isCreative()) {
+        if (client.player == null) {
             return;
         }
 
         int width = 32;
         int height = 12;
-        int yDiff = client.currentScreen.getTitle().toString().contains("chestDouble") ? 124 : 96;
+        // Edge cases for different screens
+        int yDiff = 96;
+        if (client.currentScreen instanceof CreativeInventoryScreen) {
+            yDiff = 108;
+        } else if (client.currentScreen.getTitle().toString().contains("chestDouble")) {
+            yDiff = 124;
+        }
         ScreenOverlay.slotEntryField = new TextFieldWidget(
                 client.textRenderer,
                 client.getWindow().getScaledWidth() / 2 - width / 2,
