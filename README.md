@@ -1,7 +1,8 @@
 # OnlyKeys
 
 OnlyKeys is a Minecraft Fabric Mod that allows you to play minecraft using only your keyboard. \
-The mod is still very early in development and will very likely have some bugs. If you encounter any please let me [know](https://github.com/jaszlo/OnlyKeys/issues)
+The mod is still very early in development and will very likely have some bugs. If you encounter any please let me [know](https://github.com/jaszlo/OnlyKeys/issues). \
+It is important to note that the [Fabric API](https://modrinth.com/mod/fabric-api) is required for this mod to work.
 
 It does so by moving the cameara via `u h j k`, left clicking via `z` and right clicking via `i`.
 The inventory is controlled via a selected slot that is marked and can be moved with the camera key bindings. \
