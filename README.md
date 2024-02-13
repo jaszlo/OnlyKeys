@@ -1,18 +1,46 @@
-# FabricModTemplate
-A Template to start developing Minecraft Fabric mods
-To Rename the mod from template do the following steps.
+# OnlyKeys
 
-1. Refactor the package `net.jasper.onlykeys` package to `net.jasper.<your_mod_name>`
-2. Refactor the classes `TemplateMod.java`, `TemplateModClient.java` and `TemplateModDataGenerator.java` according to your Mod's name also the MOD_ID variable in those Classes.
-3. Refactor the `template.mixins.json`according to your mods name and change the field `package` inside the file.
-4. Inside the `fabric.mod.json` apply the following changes:
-     - Change *id* from `template` to `<your_mod_name>`
-     - Change *name* from `template` to `<your_mod_name>`
-     - Change the entrypoints to fit the new package path and file names
+OnlyKeys is a Minecraft Fabric Mod that allows you to play minecraft using only your keyboard. \
+The mod is still very early in development and will very likely have some bugs. If you encounter any please let me [know](https://github.com/jaszlo/OnlyKeys/issues)
 
-## Further required steps to Steup intelliJ
+It does so by moving the cameara via `u h j k`, left clicking via `z` and right clicking via `i`.
+The inventory is controlled via a selected slot that is marked and can be moved with the camera key bindings. \
+Additionally for faster slot movement there is a quick slot selection that can be opened using `l`. It allows you to enter 
+the id of the slot and instantly select it.
 
-1. Project Structure > Select JDK to `JDK17` and Language Level to `SKD default`
-2. Settings > Build, Execution, Deployment > Build Tools > Gradle > Select Gradle JVM to `Project SDK`
-3. run `.\gradlew genSources`
-4. Gradle (Sidebar) > Tasks > fabric > runClient
+<div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; text-align: center;" align:"center">
+<img src="https://github.com/jaszlo/OnlyKeys/assets/55958177/ab6dd82f-129e-4847-851a-12f699951026" style="width: 500px; height: auto; margin: 10px;">
+<img src="https://github.com/jaszlo/OnlyKeys/assets/55958177/cb713239-f24b-4852-b239-2bee41e55c5d" style="width: 484px; height: auto; margin: 10px;">
+</div>
+<br>
+<br>
+
+
+Here is a short demo of the mod where you can see the game is controlled using the keyboard only. Also the goal of crafting a *wodden hoe* is completed successfully.
+The Keyboard Visualizer used can be found [here](https://github.com/jaszlo/KeyboardVisualizer) is Open Source and very basic.
+
+https://github.com/jaszlo/OnlyKeys/assets/55958177/1b04bc15-92fc-4ade-80fd-3ba0580df1fc
+
+
+## Default Controlls
+By default the following are the key bindings. Feel free to change them. You can also have Camera and Slot movement on different keys if you like.
+
+
+- `F4` Enable/Disable OnlyKeys
+- `u` Camera Up & Slot Up
+- `j` Camera Down & Slot Down
+- `h` Camera Left & Slot Left
+- `k` Camera Right & Slot Right
+- `z` Left Click
+- `i` Right Click
+- `l` Open Quick Slot Selection
+- `TAB` Change Creative Inventory Tab
+- `Page Up` Scroll Up in Creative Inventory
+- `Page Down` Scroll Down in Creative Inventory
+
+
+
+
+
+
+
