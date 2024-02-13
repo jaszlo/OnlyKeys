@@ -7,14 +7,16 @@
   },
   "client": [
     "ChangeGameModeMixin",
-    "accessors.KeyBindingAccessors",
-    "accessors.MouseAccessors",
-    "mouse.MouseMixin",
     "accessors.CreativeInventoryScreenAccessors",
     "accessors.HandledScreenAccessors",
-    "screens.CancelItemCountRender",
-    "screens.QuickSlotTextFieldCreator",
+    "accessors.KeyBindingAccessors",
+    "accessors.MouseAccessors",
+    "accessors.OptionScreenAccessors",
     "accessors.ScreenAccessor",
+    "mouse.MouseMixin",
+    "screens.CancelItemCountRender",
+    "screens.OptionsScreenMixin",
+    "screens.QuickSlotTextFieldCreator",
     "screens.ScreenAdditions"
   ]
 }
