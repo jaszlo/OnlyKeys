@@ -24,6 +24,7 @@ https://github.com/jaszlo/OnlyKeys/assets/55958177/1b04bc15-92fc-4ade-80fd-3ba05
 
 ## Default Controlls
 By default the following are the key bindings. Feel free to change them. You can also have Camera and Slot movement on different keys if you like.
+If you want to get rid of the warning for the overlap in key bindings with no conflict I recommend [this](https://modrinth.com/mod/nokeybindwarnings) mod that allows you to turn them off.
 
 
 - `F4` Enable/Disable OnlyKeys
