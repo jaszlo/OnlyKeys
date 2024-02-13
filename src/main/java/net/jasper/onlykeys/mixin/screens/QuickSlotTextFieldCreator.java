@@ -1,6 +1,7 @@
 package net.jasper.onlykeys.mixin.screens;
 
 import net.jasper.onlykeys.mixin.accessors.ScreenAccessor;
+import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.keymovements.InventoryMovement;
 import net.jasper.onlykeys.mod.util.ScreenOverlay;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +22,11 @@ public class QuickSlotTextFieldCreator {
 
     @Inject(method="init", at=@At("RETURN"))
     private void injected(CallbackInfo ci) {
+        // Leave if mod is not enabled
+        if (!OnlyKeysModClient.onlyKeysEnabled) {
+            return;
+        }
+
         MinecraftClient client = MinecraftClient.getInstance();
         assert client.currentScreen != null;
         if (!ScreenOverlay.isAllowedScreen(this)) {

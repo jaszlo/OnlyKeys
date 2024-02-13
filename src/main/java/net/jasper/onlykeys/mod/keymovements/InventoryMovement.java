@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.jasper.onlykeys.mixin.accessors.HandledScreenAccessors;
 import net.jasper.onlykeys.mixin.accessors.KeyBindingAccessors;
 import net.jasper.onlykeys.mixin.accessors.MouseAccessors;
+import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.util.Direction;
 import net.jasper.onlykeys.mod.util.Keys;
 import net.jasper.onlykeys.mod.util.ScreenOverlay;
@@ -86,6 +87,11 @@ public class InventoryMovement {
         // If in creative inventory and currently searching for an item, do nothing unless search "finished" (?)
         // Todo: SearchBox needs to be toggled off/on focus somehow
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            // Leave if mod is not enabled
+            if (!OnlyKeysModClient.onlyKeysEnabled) {
+                return;
+            }
+
             cancelMouse = false;
             // Reduce cooldown
             currentClickCooldown = Math.max(0, currentClickCooldown - 1);
@@ -115,7 +121,7 @@ public class InventoryMovement {
                 accessibleMouse.setX(scale * x); accessibleMouse.setY(scale * y);
                 // Hide the cursor, position doesn't matter as it was set above and this will only take effect in the next tick where it will already be overwritten again
                 // Currently disabled for debugging
-                // InputUtil.setCursorParameters(client.getWindow().getHandle(), InputUtil.GLFW_CURSOR_DISABLED, x, y);
+                InputUtil.setCursorParameters(client.getWindow().getHandle(), InputUtil.GLFW_CURSOR_DISABLED, x, y);
 
                 // Clearing Keys if they were pressed via OnlyKeys
                 if (mouseButtonsPressed[LEFT_CLICK]) Keys.clear(client.options.attackKey);

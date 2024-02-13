@@ -47,6 +47,11 @@ public class CreativeInventoryMovement {
 
     public static void register() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            // Leave if mod is not enabled
+            if (!OnlyKeysModClient.onlyKeysEnabled) {
+                return;
+            }
+
             // Reduce cooldown
             clickCooldown = Math.max(0, clickCooldown - 1);
 

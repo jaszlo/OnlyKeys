@@ -3,6 +3,7 @@ package net.jasper.onlykeys.mod.util;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.jasper.onlykeys.mixin.accessors.KeyBindingAccessors;
+import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -64,9 +65,13 @@ public class Keys {
     // Changing creative tab
     public static KeyBinding changeCreativeTab  = new KeyBinding("onlykeys.keybinds.changeCreativeTab", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_TAB, CATEGORY);
 
+    // Enable/Disable mod entirely
+    public static KeyBinding toggleMod = new KeyBinding("onlykeys.keybinds.toggleMod", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, CATEGORY);
+
     public static final KeyBinding[] ONLYKEYS_KEYBINDINGS = new KeyBinding[] {
-            cameraUp, cameraDown, cameraLeft, cameraRight, slotUp, slotDown, slotLeft, slotRight, leftClick, wheelClick, rightClick, scrollUp, scrollDown, changeCreativeTab, toggleQuickSlotMenu
+            cameraUp, cameraDown, cameraLeft, cameraRight, slotUp, slotDown, slotLeft, slotRight, leftClick, wheelClick, rightClick, scrollUp, scrollDown, changeCreativeTab, toggleQuickSlotMenu, toggleMod
     };
+
 
 
     private static final int MENU_TOGGLE_COOLDOWN = 5;
@@ -78,6 +83,15 @@ public class Keys {
         }
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            if (toggleMod.wasPressed()) {
+                OnlyKeysModClient.toggleModEnabled();
+            }
+
+            // Leave if mod is not enabled
+            if (!OnlyKeysModClient.onlyKeysEnabled) {
+                return;
+            }
+
             if (currentMenuToggleCooldown > 0) {
                 currentMenuToggleCooldown--;
                 return;

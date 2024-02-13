@@ -33,6 +33,11 @@ public class ScreenAdditions {
 
     @Inject(method="render", at=@At("RETURN"))
     private void inventoryOverlay(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        // Leave if mod is not enabled
+        if (!OnlyKeysModClient.onlyKeysEnabled) {
+            return;
+        }
+
         // Render a rectangle around the selected slot in the inventory
         // It should be the same as the one in the hotbar but in a different color
         assert client != null;

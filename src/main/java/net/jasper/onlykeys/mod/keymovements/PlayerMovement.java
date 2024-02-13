@@ -2,6 +2,7 @@ package net.jasper.onlykeys.mod.keymovements;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.jasper.onlykeys.mixin.accessors.KeyBindingAccessors;
+import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.util.Keys;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
@@ -20,6 +21,11 @@ public class PlayerMovement {
     private static boolean keyMouseRight = false;
     public static void register() {
         WorldRenderEvents.START.register(context -> {
+            // Leave if mod is not enabled
+            if (!OnlyKeysModClient.onlyKeysEnabled) {
+                return;
+            }
+
             MinecraftClient client = MinecraftClient.getInstance();
             // If any screen is open do nothing
             if (client.currentScreen != null) {

@@ -15,5 +15,8 @@
   "onlykeys.keybinds.scrollUp": "Creative Inventory Scroll Up",
   "onlykeys.keybinds.scrollDown": "Creative Inventory Scroll Down",
   "onlykeys.keybinds.changeCreativeTab": "Change Creative Tab",
-  "onlykeys.keybinds.openQuickSlotMenu": "Open Quick Slot Menu"
+  "onlykeys.keybinds.openQuickSlotMenu": "Open Quick Slot Menu",
+  "onlykeys.keybinds.toggleMod": "Enable/Disable Mod",
+
+  "onlykeys.chatInfo.prefix": "OnlyKeys has been turned"
 }
