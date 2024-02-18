@@ -62,7 +62,7 @@ public class ScreenAdditions {
         int finalX = x;
         MinecraftClient.getInstance().execute(() -> {
             context.getMatrices().push();
-            context.drawGuiTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18);
+            context.drawTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18, 18, 18);
             context.getMatrices().pop();
         });
 
@@ -114,7 +114,7 @@ public class ScreenAdditions {
                 slotField.write(c + "");
             // Delete number
             } else if (c == GLFW.GLFW_KEY_BACKSPACE) {
-                slotField.eraseCharactersTo(slotField.getCursor() - 1);
+                slotField.eraseCharacters(-1);
             // Set selected Slot
             } else if (c == GLFW.GLFW_KEY_ENTER && !slotField.getText().isEmpty()) {
                 ScreenOverlay.toggle();

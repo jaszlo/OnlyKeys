@@ -68,10 +68,10 @@ public class CreativeInventoryMovement {
             int scrollDownCode = ((KeyBindingAccessors) scrollDown).getBoundKey().getCode();
 
             if (InputUtil.isKeyPressed(handle, scrollUpCode)) {
-                client.currentScreen.mouseScrolled(client.mouse.getX(), client.mouse.getY(), 1, 1);
+                client.currentScreen.mouseScrolled(client.mouse.getX(), client.mouse.getY(), 1);
                 OnlyKeysModClient.LOGGER.info("Scrolling up");
             } else if (InputUtil.isKeyPressed(handle, scrollDownCode)) {
-                client.currentScreen.mouseScrolled(client.mouse.getX(), client.mouse.getY(), -1, -1);
+                client.currentScreen.mouseScrolled(client.mouse.getX(), client.mouse.getY(), -1);
                 OnlyKeysModClient.LOGGER.info("Scrolling down");
             }
 
