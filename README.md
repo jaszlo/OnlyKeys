@@ -1,7 +1,8 @@
 # OnlyKeys
 
 OnlyKeys is a Minecraft Fabric Mod that allows you to play minecraft using only your keyboard. \
-The mod is still very early in development and will very likely have some bugs. If you encounter any please let me [know](https://github.com/jaszlo/OnlyKeys/issues)
+The mod is still very early in development and will very likely have some bugs. If you encounter any please let me [know](https://github.com/jaszlo/OnlyKeys/issues). \
+It is important to note that the [Fabric API](https://modrinth.com/mod/fabric-api) is required for this mod to work.
 
 It does so by moving the cameara via `u h j k`, left clicking via `z` and right clicking via `i`.
 The inventory is controlled via a selected slot that is marked and can be moved with the camera key bindings. \
@@ -9,8 +10,8 @@ Additionally for faster slot movement there is a quick slot selection that can b
 the id of the slot and instantly select it.
 
 <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; text-align: center;" align:"center">
-<img src="https://github.com/jaszlo/OnlyKeys/assets/55958177/ab6dd82f-129e-4847-851a-12f699951026" style="width: 500px; height: auto; margin: 10px;">
-<img src="https://github.com/jaszlo/OnlyKeys/assets/55958177/cb713239-f24b-4852-b239-2bee41e55c5d" style="width: 484px; height: auto; margin: 10px;">
+<img src="https://github.com/jaszlo/OnlyKeys/assets/55958177/ab6dd82f-129e-4847-851a-12f699951026" style="width: 250px; height: auto; margin: 10px;">
+<img src="https://github.com/jaszlo/OnlyKeys/assets/55958177/cb713239-f24b-4852-b239-2bee41e55c5d" style="width: 242px; height: auto; margin: 10px;">
 </div>
 <br>
 <br>
