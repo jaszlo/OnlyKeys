@@ -20,7 +20,6 @@ public class ScreenOverlay {
             BeaconScreen.class,
             BrewingStandScreen.class,
             CartographyTableScreen.class,
-            CrafterScreen.class,
             CraftingScreen.class,
             CreativeInventoryScreen.class,
             EnchantmentScreen.class,
@@ -39,7 +38,6 @@ public class ScreenOverlay {
             SmithingScreen.class,
             SmokerScreen.class,
             StonecutterScreen.class,
-
     };
 
 

@@ -62,7 +62,9 @@ public class ScreenAdditions {
         int finalX = x;
         MinecraftClient.getInstance().execute(() -> {
             context.getMatrices().push();
-            context.drawGuiTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18);
+            // public void drawTexture(Identifier texture, int x, int y, int u, int v, int width, int height)
+            //context.drawGuiTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18);
+            context.drawTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18, 18, 18);
             context.getMatrices().pop();
         });
 
@@ -103,7 +105,6 @@ public class ScreenAdditions {
 
         // Cancel normal keypress handling if the key is one of the onlykeys keybindings was used
         if (Arrays.stream(ONLYKEYS_KEYBINDINGS).anyMatch(keyBinding -> keyBinding.matchesKey(keyCode, scanCode))) {
-            OnlyKeysModClient.LOGGER.info("Cancelling keypress");
             cir.setReturnValue(true);
             cir.cancel();
         } else {
@@ -114,7 +115,7 @@ public class ScreenAdditions {
                 slotField.write(c + "");
             // Delete number
             } else if (c == GLFW.GLFW_KEY_BACKSPACE) {
-                slotField.eraseCharactersTo(slotField.getCursor() - 1);
+                slotField.eraseCharacters(-1);
             // Set selected Slot
             } else if (c == GLFW.GLFW_KEY_ENTER && !slotField.getText().isEmpty()) {
                 ScreenOverlay.toggle();
