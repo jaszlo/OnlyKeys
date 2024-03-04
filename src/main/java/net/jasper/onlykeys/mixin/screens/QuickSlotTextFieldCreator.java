@@ -29,12 +29,14 @@ public class QuickSlotTextFieldCreator {
 
         MinecraftClient client = MinecraftClient.getInstance();
         assert client.currentScreen != null;
-        if (!ScreenOverlay.isAllowedScreen(this)) {
+        if (!ScreenOverlay.isAllowedScreen(this) || client.player == null) {
             return;
         }
         // When creating a new allowed screen set selected slot to 0 or the last selected slot which is set on close
-        InventoryMovement.selectedSlot = ScreenOverlay.screenSlotMapping.getOrDefault(this.getClass(), 0);
-
+        final int slotAmount = client.player.currentScreenHandler.slots.size();
+        final int lastSlot = ScreenOverlay.screenSlotMapping.getOrDefault(this.getClass(), 0);
+        // This check is required to prevent the game from cashing if the amount of slots can vary for containers with the same class e.g. chests
+        InventoryMovement.selectedSlot = lastSlot < slotAmount ? lastSlot : 0;
         // Also reset cooldown to prevent from clicking slot instantly
         InventoryMovement.resetClickCooldown();
 
