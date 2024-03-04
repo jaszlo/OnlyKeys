@@ -69,7 +69,7 @@ public class PlayerMovement {
             client.options.attackKey.setPressed(pressedLeft);
             keyMouseLeft = pressedLeft;
             // Check if the player is attacking an entity
-            if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.ENTITY) {
+            if (pressedLeft && client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.ENTITY) {
                 EntityHitResult hitResult = (EntityHitResult) client.crosshairTarget;
                 client.interactionManager.attackEntity(client.player, hitResult.getEntity());
             }
