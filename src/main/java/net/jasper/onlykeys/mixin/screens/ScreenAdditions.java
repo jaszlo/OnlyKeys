@@ -29,7 +29,7 @@ public class ScreenAdditions {
     @Shadow @Nullable protected MinecraftClient client;
 
     @Unique
-    private static final Identifier HOTBAR_SELECTION_TEXTURE = new Identifier("hud/hotbar_selection");
+    private static final Identifier HOTBAR_SELECTION_TEXTURE = Identifier.of("hud/hotbar_selection");
 
     @Inject(method="render", at=@At("RETURN"))
     private void inventoryOverlay(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
