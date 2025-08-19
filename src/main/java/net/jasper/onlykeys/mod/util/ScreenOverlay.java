@@ -14,7 +14,7 @@ public class ScreenOverlay {
 
     public static final Class<?>[] ALLOWED_SCREENS = {
             AbstractFurnaceScreen.class,
-            AbstractInventoryScreen.class,
+            InventoryScreen.class,
             AnvilScreen.class,
             BlastFurnaceScreen.class,
             BeaconScreen.class,

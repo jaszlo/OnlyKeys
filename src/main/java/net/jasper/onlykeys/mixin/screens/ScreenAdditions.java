@@ -5,6 +5,7 @@ import net.jasper.onlykeys.mod.OnlyKeysModClient;
 import net.jasper.onlykeys.mod.keymovements.InventoryMovement;
 import net.jasper.onlykeys.mod.util.ScreenOverlay;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -61,9 +62,9 @@ public class ScreenAdditions {
         int finalY = y;
         int finalX = x;
         MinecraftClient.getInstance().execute(() -> {
-            context.getMatrices().push();
-            context.drawGuiTexture(HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18);
-            context.getMatrices().pop();
+            context.getMatrices().pushMatrix();
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, finalX, finalY, 18, 18);
+            context.getMatrices().popMatrix();
         });
 
         MinecraftClient client = MinecraftClient.getInstance();
@@ -77,8 +78,8 @@ public class ScreenAdditions {
         // Draw indices
         int globalSlotIndex = 0;
         for (Slot s : client.player.currentScreenHandler.slots) {
-            context.getMatrices().push();
-            context.getMatrices().translate(0, 0, 500);
+            //context.getMatrices().pushMatrix();
+            //context.getMatrices().translate(0, 0, 500);
             context.drawText(
                     client.textRenderer,
                     (globalSlotIndex++) + "",
@@ -87,7 +88,7 @@ public class ScreenAdditions {
                     0xFFFFFF,
                     true
             );
-            context.getMatrices().pop();
+            //context.getMatrices().popMatrix();
         }
 
         // Draw textField
@@ -125,6 +126,5 @@ public class ScreenAdditions {
                 }
             }
         }
-
     }
 }

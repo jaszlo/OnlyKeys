@@ -23,7 +23,7 @@ public class OnlyKeysModClient implements ClientModInitializer {
             onlyKeysEnabled = !onlyKeysEnabled;
             String prefix = Text.translatable("onlykeys.chatInfo.prefix").getString();
             String toggle = (onlyKeysEnabled ? ScreenTexts.ON : ScreenTexts.OFF).getString();
-            MinecraftClient.getInstance().player.sendMessage(Text.of(prefix + " " + toggle));
+            MinecraftClient.getInstance().player.sendMessage(Text.of(prefix + " " + toggle), true);
         }
     }
 
