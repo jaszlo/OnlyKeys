@@ -64,6 +64,8 @@ public class PlayerMovement {
             // LEFT
             boolean pressedLeft = InputUtil.isKeyPressed(handle, leftClickCode);
 
+            // FIXME: I suspect #6 has something to do with this bit,
+            // if it hasn't already been fixed
             if (pressedLeft) client.player.swingHand(Hand.MAIN_HAND);
             else if (client.player.handSwinging) client.interactionManager.cancelBlockBreaking();
             client.options.attackKey.setPressed(pressedLeft);

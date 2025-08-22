@@ -77,7 +77,7 @@ public class CreativeInventoryMovement {
 
             // Changing Creative Tab if hasCreativeInventory
             // Get KeyCode for changeCreativeTab
-            if (!client.interactionManager.hasCreativeInventory()) {
+            if (!client.interactionManager.getCurrentGameMode().isCreative()) {
                 return;
             }
 
