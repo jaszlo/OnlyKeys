@@ -78,8 +78,6 @@ public class ScreenAdditions {
         // Draw indices
         int globalSlotIndex = 0;
         for (Slot s : client.player.currentScreenHandler.slots) {
-            //context.getMatrices().pushMatrix();
-            //context.getMatrices().translate(0, 0, 500);
             context.drawText(
                     client.textRenderer,
                     String.valueOf(globalSlotIndex++),
@@ -88,7 +86,6 @@ public class ScreenAdditions {
                     0xFFFFFFFF, // Newer versions require alpha to be specified
                     true
             );
-            //context.getMatrices().popMatrix();
         }
 
         // Draw textField
