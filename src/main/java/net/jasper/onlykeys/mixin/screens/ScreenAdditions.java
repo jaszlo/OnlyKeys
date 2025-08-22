@@ -82,10 +82,10 @@ public class ScreenAdditions {
             //context.getMatrices().translate(0, 0, 500);
             context.drawText(
                     client.textRenderer,
-                    (globalSlotIndex++) + "",
+                    String.valueOf(globalSlotIndex++),
                     s.x + mixin.getX() + 1,
                     s.y + mixin.getY() + 1,
-                    0xFFFFFF,
+                    0xFFFFFFFF, // Newer versions require alpha to be specified
                     true
             );
             //context.getMatrices().popMatrix();
