@@ -1,4 +1,4 @@
-# OnlyKeys
+# OnlyKeys [!DISCONTINUED!]
 
 OnlyKeys is a Minecraft Fabric Mod that allows you to play minecraft using only your keyboard. \
 The mod is still very early in development and will very likely have some bugs. If you encounter any please let me [know](https://github.com/jaszlo/OnlyKeys/issues). \
